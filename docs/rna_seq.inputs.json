@@ -1,0 +1,25 @@
+{
+  "RnaSeq.samples": [
+    {
+      "sample_id": "sample01",
+      "group": "control",
+      "read1_path": "/data/fastq/sample01_R1.fastq.gz",
+      "read2_path": "/data/fastq/sample01_R2.fastq.gz"
+    },
+    {
+      "sample_id": "sample02",
+      "group": "treatment",
+      "read1_path": "/data/fastq/sample02_R1.fastq.gz",
+      "read2_path": "/data/fastq/sample02_R2.fastq.gz"
+    }
+  ],
+  "RnaSeq.genome_fasta_path": "/data/reference/genome.fa",
+  "RnaSeq.annotation_gtf_path": "/data/reference/genes.gtf",
+  "RnaSeq.enrichment_annotation_path": "/data/reference/gene_annotation.tsv",
+  "RnaSeq.output_dir": "/data/rnaseq_results",
+  "RnaSeq.threads": 8,
+  "RnaSeq.sjdb_overhang": 149,
+  "RnaSeq.min_count": 10,
+  "RnaSeq.padj_cutoff": 0.05,
+  "RnaSeq.log2fc_cutoff": 1.0
+}
