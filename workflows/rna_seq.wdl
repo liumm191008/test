@@ -18,7 +18,7 @@ workflow RnaSeq {
     Int threads = 8
     Int sjdb_overhang = 149
 
-    String fastqc_image = "docker run --rm -v /data:/data registry.cn-guangzhou.aliyuncs.com/origen/fastqc"
+    String fastqc_image = "docker run --rm -v /data2:/data registry.cn-guangzhou.aliyuncs.com/origen/fastqc"
     String trim_galore_image = "docker run --rm -v /data:/data registry.cn-guangzhou.aliyuncs.com/origen/trim-galore"
     String star_image = "docker run --rm -v /data:/data registry.cn-guangzhou.aliyuncs.com/origen/star"
     String subread_image = "docker run --rm -v /data:/data registry.cn-guangzhou.aliyuncs.com/origen/subread"
