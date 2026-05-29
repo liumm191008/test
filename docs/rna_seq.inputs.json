@@ -1,0 +1,19 @@
+{
+  "RnaSeq.samples": [
+    {
+      "sample_id": "sample01",
+      "read1_path": "/data/fastq/sample01_R1.fastq.gz",
+      "read2_path": "/data/fastq/sample01_R2.fastq.gz"
+    },
+    {
+      "sample_id": "sample02",
+      "read1_path": "/data/fastq/sample02_R1.fastq.gz",
+      "read2_path": "/data/fastq/sample02_R2.fastq.gz"
+    }
+  ],
+  "RnaSeq.genome_fasta_path": "/data/reference/genome.fa",
+  "RnaSeq.annotation_gtf_path": "/data/reference/genes.gtf",
+  "RnaSeq.output_dir": "/data/rnaseq_results",
+  "RnaSeq.threads": 8,
+  "RnaSeq.sjdb_overhang": 149
+}
