@@ -305,7 +305,7 @@ plot_enrichment <- function(enrich_result, result_df, plot_dir, prefix, label,
     if (draw_barplot) {
         log_step("Plotting ", label, " barplot: ", barplot_file)
         pdf(barplot_file, width = width, height = height)
-        print(enrichplot::barplot(enrich_result, showCategory = show_category))
+        print(barplot(enrich_result, showCategory = show_category))
         dev.off()
     }
 
