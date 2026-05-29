@@ -1,8 +1,7 @@
 version 1.0
 
 ## Paired-end RNA-seq sample definition.
-## All paths must be absolute host paths under /data because each image command
-## includes a Docker runner that mounts only /data inside containers.
+## All paths must be absolute host paths available through the docker_run mount.
 struct RnaSeqSample {
   String sample_id
   String group
@@ -15,7 +14,7 @@ workflow RnaSeq {
     Array[RnaSeqSample] samples
     String genome_fasta_path
     String annotation_gtf_path
-    String output_dir = "/data/rnaseq_results"
+    String output_dir = "/home/data/vip01/work/rnaseq_results"
     String enrichment_annotation_path = ""
     Int threads = 8
     Int sjdb_overhang = 149
@@ -23,12 +22,13 @@ workflow RnaSeq {
     Float padj_cutoff = 0.05
     Float log2fc_cutoff = 1.0
 
-    String fastqc_image = "docker run --rm -v /data:/data registry.cn-guangzhou.aliyuncs.com/origen/fastqc"
-    String trim_galore_image = "docker run --rm -v /data:/data registry.cn-guangzhou.aliyuncs.com/origen/trim-galore"
-    String star_image = "docker run --rm -v /data:/data registry.cn-guangzhou.aliyuncs.com/origen/star"
-    String subread_image = "docker run --rm -v /data:/data registry.cn-guangzhou.aliyuncs.com/origen/subread"
-    String multiqc_image = "docker run --rm -v /data:/data registry.cn-guangzhou.aliyuncs.com/origen/multiqc"
-    String differential_analysis_image = "docker run --rm -v /data:/data registry.cn-guangzhou.aliyuncs.com/origen/deseq2"
+    String docker_run = "docker run --rm --security-opt seccomp=unconfined  -v /home/data/vip01/work:/home/data/vip01/work"
+    String fastqc_image = "registry.cn-guangzhou.aliyuncs.com/origen/fastqc"
+    String trim_galore_image = "registry.cn-guangzhou.aliyuncs.com/origen/trim-galore"
+    String star_image = "registry.cn-guangzhou.aliyuncs.com/origen/star"
+    String subread_image = "registry.cn-guangzhou.aliyuncs.com/origen/subread"
+    String multiqc_image = "registry.cn-guangzhou.aliyuncs.com/origen/multiqc"
+    String differential_analysis_image = "registry.cn-guangzhou.aliyuncs.com/origen/deseq2"
   }
 
   call BuildStarIndex {
@@ -38,6 +38,7 @@ workflow RnaSeq {
       output_dir = output_dir,
       threads = threads,
       sjdb_overhang = sjdb_overhang,
+      docker_run = docker_run,
       image = star_image
   }
 
@@ -52,6 +53,7 @@ workflow RnaSeq {
         read2_path = sample.read2_path,
         output_dir = output_dir,
         threads = threads,
+        docker_run = docker_run,
         image = fastqc_image
     }
 
@@ -62,6 +64,7 @@ workflow RnaSeq {
         read2_path = sample.read2_path,
         output_dir = output_dir,
         threads = threads,
+        docker_run = docker_run,
         image = trim_galore_image
     }
 
@@ -72,6 +75,7 @@ workflow RnaSeq {
         read2_path = TrimReads.trimmed_read2_path,
         output_dir = output_dir,
         threads = threads,
+        docker_run = docker_run,
         image = fastqc_image
     }
 
@@ -83,6 +87,7 @@ workflow RnaSeq {
         genome_dir = BuildStarIndex.genome_dir,
         output_dir = output_dir,
         threads = threads,
+        docker_run = docker_run,
         image = star_image
     }
   }
@@ -93,6 +98,7 @@ workflow RnaSeq {
       annotation_gtf_path = annotation_gtf_path,
       output_dir = output_dir,
       threads = threads,
+      docker_run = docker_run,
       image = subread_image
   }
 
@@ -106,6 +112,7 @@ workflow RnaSeq {
       min_count = min_count,
       padj_cutoff = padj_cutoff,
       log2fc_cutoff = log2fc_cutoff,
+      docker_run = docker_run,
       image = differential_analysis_image
   }
 
@@ -113,6 +120,7 @@ workflow RnaSeq {
     input:
       output_dir = output_dir,
       count_matrix_path = FeatureCounts.count_matrix_path,
+      docker_run = docker_run,
       image = multiqc_image
   }
 
@@ -144,13 +152,14 @@ task BuildStarIndex {
     String output_dir
     Int threads
     Int sjdb_overhang
+    String docker_run
     String image
   }
 
   command <<<
     set -euo pipefail
-    ~{image} bash -c "mkdir -p '~{output_dir}/star_index'"
-    ~{image} bash -c "STAR --runThreadN ~{threads} --runMode genomeGenerate --genomeDir '~{output_dir}/star_index' --genomeFastaFiles '~{genome_fasta_path}' --sjdbGTFfile '~{annotation_gtf_path}' --sjdbOverhang ~{sjdb_overhang}"
+    ~{docker_run} ~{image} bash -c "mkdir -p '~{output_dir}/star_index'"
+    ~{docker_run} ~{image} bash -c "STAR --runThreadN ~{threads} --runMode genomeGenerate --genomeDir '~{output_dir}/star_index' --genomeFastaFiles '~{genome_fasta_path}' --sjdbGTFfile '~{annotation_gtf_path}' --sjdbOverhang ~{sjdb_overhang}"
   >>>
 
   output {
@@ -165,13 +174,14 @@ task FastQc {
     String read2_path
     String output_dir
     Int threads
+    String docker_run
     String image
   }
 
   command <<<
     set -euo pipefail
-    ~{image} bash -c "mkdir -p '~{output_dir}/fastqc/~{sample_id}'"
-    ~{image} bash -c "fastqc --threads ~{threads} --outdir '~{output_dir}/fastqc/~{sample_id}' '~{read1_path}' '~{read2_path}'"
+    ~{docker_run} ~{image} bash -c "mkdir -p '~{output_dir}/fastqc/~{sample_id}'"
+    ~{docker_run} ~{image} bash -c "fastqc --threads ~{threads} --outdir '~{output_dir}/fastqc/~{sample_id}' '~{read1_path}' '~{read2_path}'"
   >>>
 
   output {
@@ -186,15 +196,16 @@ task TrimReads {
     String read2_path
     String output_dir
     Int threads
+    String docker_run
     String image
   }
 
   command <<<
     set -euo pipefail
-    ~{image} bash -c "mkdir -p '~{output_dir}/trimmed/~{sample_id}'"
-    ~{image} bash -c "trim_galore --paired --cores ~{threads} --gzip --basename '~{sample_id}' --output_dir '~{output_dir}/trimmed/~{sample_id}' '~{read1_path}' '~{read2_path}'"
-    ~{image} bash -c "test -s '~{output_dir}/trimmed/~{sample_id}/~{sample_id}_val_1.fq.gz'"
-    ~{image} bash -c "test -s '~{output_dir}/trimmed/~{sample_id}/~{sample_id}_val_2.fq.gz'"
+    ~{docker_run} ~{image} bash -c "mkdir -p '~{output_dir}/trimmed/~{sample_id}'"
+    ~{docker_run} ~{image} bash -c "trim_galore --paired --cores ~{threads} --gzip --basename '~{sample_id}' --output_dir '~{output_dir}/trimmed/~{sample_id}' '~{read1_path}' '~{read2_path}'"
+    ~{docker_run} ~{image} bash -c "test -s '~{output_dir}/trimmed/~{sample_id}/~{sample_id}_val_1.fq.gz'"
+    ~{docker_run} ~{image} bash -c "test -s '~{output_dir}/trimmed/~{sample_id}/~{sample_id}_val_2.fq.gz'"
   >>>
 
   output {
@@ -212,14 +223,15 @@ task StarAlign {
     String genome_dir
     String output_dir
     Int threads
+    String docker_run
     String image
   }
 
   command <<<
     set -euo pipefail
-    ~{image} bash -c "mkdir -p '~{output_dir}/star/~{sample_id}'"
-    ~{image} bash -c "STAR --runThreadN ~{threads} --genomeDir '~{genome_dir}' --readFilesIn '~{read1_path}' '~{read2_path}' --readFilesCommand zcat --outFileNamePrefix '~{output_dir}/star/~{sample_id}/' --outSAMtype BAM SortedByCoordinate --quantMode GeneCounts"
-    ~{image} bash -c "mv '~{output_dir}/star/~{sample_id}/Aligned.sortedByCoord.out.bam' '~{output_dir}/star/~{sample_id}/~{sample_id}.sorted.bam'"
+    ~{docker_run} ~{image} bash -c "mkdir -p '~{output_dir}/star/~{sample_id}'"
+    ~{docker_run} ~{image} bash -c "STAR --runThreadN ~{threads} --genomeDir '~{genome_dir}' --readFilesIn '~{read1_path}' '~{read2_path}' --readFilesCommand zcat --outFileNamePrefix '~{output_dir}/star/~{sample_id}/' --outSAMtype BAM SortedByCoordinate --quantMode GeneCounts"
+    ~{docker_run} ~{image} bash -c "mv '~{output_dir}/star/~{sample_id}/Aligned.sortedByCoord.out.bam' '~{output_dir}/star/~{sample_id}/~{sample_id}.sorted.bam'"
   >>>
 
   output {
@@ -235,13 +247,14 @@ task FeatureCounts {
     String annotation_gtf_path
     String output_dir
     Int threads
+    String docker_run
     String image
   }
 
   command <<<
     set -euo pipefail
-    ~{image} bash -c "mkdir -p '~{output_dir}/counts'"
-    ~{image} bash -c "featureCounts -T ~{threads} -p -B -C -a '~{annotation_gtf_path}' -o '~{output_dir}/counts/gene_counts.tsv' ~{sep=" " bam_paths}"
+    ~{docker_run} ~{image} bash -c "mkdir -p '~{output_dir}/counts'"
+    ~{docker_run} ~{image} bash -c "featureCounts -T ~{threads} -p -B -C -a '~{annotation_gtf_path}' -o '~{output_dir}/counts/gene_counts.tsv' ~{sep=" " bam_paths}"
   >>>
 
   output {
@@ -260,13 +273,14 @@ task DifferentialExpressionEnrichment {
     Int min_count
     Float padj_cutoff
     Float log2fc_cutoff
+    String docker_run
     String image
   }
 
   command <<<
     set -euo pipefail
-    ~{image} bash -c "mkdir -p '~{output_dir}/differential_expression' '~{output_dir}/enrichment' '~{output_dir}/plots'"
-    ~{image} Rscript - <<'RSCRIPT'
+    ~{docker_run} ~{image} bash -c "mkdir -p '~{output_dir}/differential_expression' '~{output_dir}/enrichment' '~{output_dir}/plots'"
+    ~{docker_run} ~{image} Rscript - <<'RSCRIPT'
     suppressPackageStartupMessages(library(DESeq2))
     suppressPackageStartupMessages(library(ggplot2))
     suppressPackageStartupMessages(library(pheatmap))
@@ -462,14 +476,15 @@ task MultiQc {
   input {
     String output_dir
     String count_matrix_path
+    String docker_run
     String image
   }
 
   command <<<
     set -euo pipefail
-    ~{image} bash -c "test -s '~{count_matrix_path}'"
-    ~{image} bash -c "mkdir -p '~{output_dir}/multiqc'"
-    ~{image} bash -c "multiqc --outdir '~{output_dir}/multiqc' --filename multiqc_report.html '~{output_dir}'"
+    ~{docker_run} ~{image} bash -c "test -s '~{count_matrix_path}'"
+    ~{docker_run} ~{image} bash -c "mkdir -p '~{output_dir}/multiqc'"
+    ~{docker_run} ~{image} bash -c "multiqc --outdir '~{output_dir}/multiqc' --filename multiqc_report.html '~{output_dir}'"
   >>>
 
   output {

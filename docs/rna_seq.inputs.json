@@ -3,20 +3,21 @@
     {
       "sample_id": "sample01",
       "group": "control",
-      "read1_path": "/data/fastq/sample01_R1.fastq.gz",
-      "read2_path": "/data/fastq/sample01_R2.fastq.gz"
+      "read1_path": "/home/data/vip01/work/example/fastq/sample01_R1.fastq.gz",
+      "read2_path": "/home/data/vip01/work/example/fastq/sample01_R2.fastq.gz"
     },
     {
       "sample_id": "sample02",
       "group": "treatment",
-      "read1_path": "/data/fastq/sample02_R1.fastq.gz",
-      "read2_path": "/data/fastq/sample02_R2.fastq.gz"
+      "read1_path": "/home/data/vip01/work/example/fastq/sample02_R1.fastq.gz",
+      "read2_path": "/home/data/vip01/work/example/fastq/sample02_R2.fastq.gz"
     }
   ],
-  "RnaSeq.genome_fasta_path": "/data/reference/genome.fa",
-  "RnaSeq.annotation_gtf_path": "/data/reference/genes.gtf",
-  "RnaSeq.enrichment_annotation_path": "/data/reference/gene_annotation.tsv",
-  "RnaSeq.output_dir": "/data/rnaseq_results",
+  "RnaSeq.genome_fasta_path": "/home/data/vip01/work/example/reference/genome.fa",
+  "RnaSeq.annotation_gtf_path": "/home/data/vip01/work/example/reference/genes.gtf",
+  "RnaSeq.enrichment_annotation_path": "/home/data/vip01/work/example/reference/gene_annotation.tsv",
+  "RnaSeq.output_dir": "/home/data/vip01/work/example/rnaseq_results",
+  "RnaSeq.docker_run": "docker run --rm --security-opt seccomp=unconfined  -v /home/data/vip01/work:/home/data/vip01/work",
   "RnaSeq.threads": 8,
   "RnaSeq.sjdb_overhang": 149,
   "RnaSeq.min_count": 10,

@@ -17,19 +17,25 @@ The workflow performs:
 
 ## Docker execution model
 
-Each tool image parameter includes the Docker runner and the image name, for example:
+The Docker runner command is configured once with `docker_run`:
 
 ```wdl
-String fastqc_image = "docker run --rm -v /data:/data registry.cn-guangzhou.aliyuncs.com/origen/fastqc"
+String docker_run = "docker run --rm --security-opt seccomp=unconfined  -v /home/data/vip01/work:/home/data/vip01/work"
 ```
 
-Tasks use that combined image command directly, so no separate Docker runner parameter needs to be passed to every task:
+Each tool image parameter contains only the image name, for example:
+
+```wdl
+String fastqc_image = "registry.cn-guangzhou.aliyuncs.com/origen/fastqc"
+```
+
+Tasks combine these two values directly:
 
 ```bash
-~{image} bash -c "fastqc --threads ~{threads} --outdir '~{output_dir}/fastqc/~{sample_id}' '~{read1_path}' '~{read2_path}'"
+~{docker_run} ~{image} bash -c "fastqc --threads ~{threads} --outdir '~{output_dir}/fastqc/~{sample_id}' '~{read1_path}' '~{read2_path}'"
 ```
 
-Because only `/data` is mounted into each container by the default image commands, all input and output paths in the WDL inputs must be absolute paths under `/data` unless you override the image command strings with additional mounts.
+Because the default Docker runner mounts `/home/data/vip01/work`, all default input and output paths should be absolute paths under `/home/data/vip01/work` unless you override `docker_run` with a different mount.
 
 ## Sample groups and downstream analysis
 
@@ -51,7 +57,7 @@ The `gene_id` values must match the `Geneid` column emitted by featureCounts. If
 
 ## Example inputs
 
-See `docs/rna_seq.inputs.json` for a minimal paired-end example. Update the sample FASTQ paths, sample groups, reference FASTA, annotation GTF, enrichment annotation table, thread count, output directory, thresholds, and image commands before running. The root-level `input.json` is a larger project-specific example with multiple groups.
+See `docs/rna_seq.inputs.json` for a minimal paired-end example. Update the sample FASTQ paths, sample groups, reference FASTA, annotation GTF, enrichment annotation table, thread count, output directory, thresholds, `docker_run`, and image names before running. The root-level `input.json` is a larger project-specific example with multiple groups.
 
 ## Example Cromwell run
 
@@ -59,4 +65,4 @@ See `docs/rna_seq.inputs.json` for a minimal paired-end example. Update the samp
 java -jar cromwell.jar run workflows/rna_seq.wdl --inputs docs/rna_seq.inputs.json
 ```
 
-The default output directory is `/data/rnaseq_results`.
+The default output directory is `/home/data/vip01/work/rnaseq_results`.

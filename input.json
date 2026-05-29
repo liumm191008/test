@@ -95,6 +95,7 @@
   "RnaSeq.annotation_gtf_path": "/home/data/vip01/work/bioproject/MJ20260515137/reference/genes.gtf",
   "RnaSeq.enrichment_annotation_path": "/home/data/vip01/work/bioproject/MJ20260515137/reference/gene_annotation.tsv",
   "RnaSeq.output_dir": "/home/data/vip01/work/bioproject/MJ20260515137/rnaseq_results",
+  "RnaSeq.docker_run": "docker run --rm --security-opt seccomp=unconfined  -v /home/data/vip01/work:/home/data/vip01/work",
   "RnaSeq.threads": 8,
   "RnaSeq.sjdb_overhang": 149,
   "RnaSeq.min_count": 10,
