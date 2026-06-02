@@ -1,0 +1,91 @@
+{
+  "CutTag.samples": [
+    {
+      "sample_id": "con1",
+      "group": "con",
+      "read1_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/con1.R1.raw.fastq.gz",
+      "read2_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/con1.R2.raw.fastq.gz"
+    },
+    {
+      "sample_id": "con2",
+      "group": "con",
+      "read1_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/con2.R1.raw.fastq.gz",
+      "read2_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/con2.R2.raw.fastq.gz"
+    },
+    {
+      "sample_id": "con3",
+      "group": "con",
+      "read1_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/con3.R1.raw.fastq.gz",
+      "read2_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/con3.R2.raw.fastq.gz"
+    },
+    {
+      "sample_id": "exo1",
+      "group": "exo",
+      "read1_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/exo1.R1.raw.fastq.gz",
+      "read2_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/exo1.R2.raw.fastq.gz"
+    },
+    {
+      "sample_id": "exo2",
+      "group": "exo",
+      "read1_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/exo2.R1.raw.fastq.gz",
+      "read2_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/exo2.R2.raw.fastq.gz"
+    },
+    {
+      "sample_id": "exo3",
+      "group": "exo",
+      "read1_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/exo3.R1.raw.fastq.gz",
+      "read2_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/exo3.R2.raw.fastq.gz"
+    },
+    {
+      "sample_id": "LPS1",
+      "group": "LPS",
+      "read1_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/LPS1.R1.raw.fastq.gz",
+      "read2_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/LPS1.R2.raw.fastq.gz"
+    },
+    {
+      "sample_id": "LPS2",
+      "group": "LPS",
+      "read1_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/LPS2.R1.raw.fastq.gz",
+      "read2_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/LPS2.R2.raw.fastq.gz"
+    },
+    {
+      "sample_id": "LPS3",
+      "group": "LPS",
+      "read1_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/LPS3.R1.raw.fastq.gz",
+      "read2_path": "/home/data/vip01/work/bioproject/MJ20260515140/seq_data/rawdata/LPS3.R2.raw.fastq.gz"
+    }
+  ],
+  "CutTag.genome_fasta_path": "/home/data/vip01/work/pipeline/database/mm39/Mus_musculus.GRCm39.dna.toplevel.fa",
+  "CutTag.annotation_gtf_path": "/home/data/vip01/work/pipeline/database/mm39/Mus_musculus.GRCm39.115.gtf",
+  "CutTag.txdb_path": "/home/data/vip01/work/pipeline/database/mm39/TxDb.Mmusculus.GRCm39.115.sqlite",
+  "CutTag.species": "mouse",
+  "CutTag.bowtie2_index_path": "/home/data/vip01/work/pipeline/database/mm39/mm39",
+  "CutTag.blacklist_bed_path": "",
+  "CutTag.spikein_index_path": "/home/data/vip01/work/pipeline/database/E.coli/MG1655",
+  "CutTag.output_dir": "/home/data/vip01/work/bioproject/MJ20260515140/cuttag_results",
+  "CutTag.docker_run": "docker run -i --rm --security-opt seccomp=unconfined  -v /home/data/vip01/work:/home/data/vip01/work",
+  "CutTag.threads": 8,
+  "CutTag.mapq": 30,
+  "CutTag.exclude_mito": true,
+  "CutTag.call_broad_peaks": false,
+  "CutTag.macs3_qvalue": 0.01,
+  "CutTag.bigwig_normalization": "CPM",
+  "CutTag.effective_genome_size": 2652783500,
+  "CutTag.bigwig_bin_size": 10,
+  "CutTag.bowtie2_image": "registry.cn-guangzhou.aliyuncs.com/origen/bowtie2",
+  "CutTag.samtools_image": "registry.cn-guangzhou.aliyuncs.com/origen/samtools",
+  "CutTag.picard_image": "registry.cn-guangzhou.aliyuncs.com/origen/picard",
+  "CutTag.deeptools_image": "registry.cn-guangzhou.aliyuncs.com/origen/deeptools",
+  "CutTag.macs3_image": "registry.cn-guangzhou.aliyuncs.com/origen/macs3",
+  "CutTag.bioconductor_image": "registry.cn-guangzhou.aliyuncs.com/origen/bioconductor",
+  "CutTag.homer_image": "registry.cn-guangzhou.aliyuncs.com/origen/homer",
+  "CutTag.keep_primary_contigs_only": true,
+  "CutTag.primary_contig_regex": "^([1-9]|1[0-9]|X|Y|MT)$",
+  "CutTag.deduplicate": false,
+  "CutTag.read_group_platform": "ILLUMINA",
+  "CutTag.enrichment_annotation_path": "",
+  "CutTag.enrichment_gene_id_type": "ENTREZID",
+  "CutTag.motif_kmer_size": 6,
+  "CutTag.diff_peak_pvalue": 0.05,
+  "CutTag.diff_peak_min_fraction_delta": 0.5
+}
