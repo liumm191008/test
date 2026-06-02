@@ -1,0 +1,27 @@
+{
+  "RnaSeq.samples": [
+    {
+      "sample_id": "sample01",
+      "group": "control",
+      "read1_path": "/home/data/vip01/work/example/fastq/sample01_R1.fastq.gz",
+      "read2_path": "/home/data/vip01/work/example/fastq/sample01_R2.fastq.gz"
+    },
+    {
+      "sample_id": "sample02",
+      "group": "treatment",
+      "read1_path": "/home/data/vip01/work/example/fastq/sample02_R1.fastq.gz",
+      "read2_path": "/home/data/vip01/work/example/fastq/sample02_R2.fastq.gz"
+    }
+  ],
+  "RnaSeq.genome_fasta_path": "/home/data/vip01/work/pipeline/database/mm39/Mus_musculus.GRCm39.dna.toplevel.fa",
+  "RnaSeq.annotation_gtf_path": "/home/data/vip01/work/pipeline/database/mm39/Mus_musculus.GRCm39.115.gtf",
+  "RnaSeq.star_index_path": "/home/data/vip01/work/pipeline/database/mm39/star_index_seqlen150",
+  "RnaSeq.enrichment_annotation_path": "/home/data/vip01/work/example/reference/gene_annotation.tsv",
+  "RnaSeq.output_dir": "/home/data/vip01/work/example/rnaseq_results",
+  "RnaSeq.docker_run": "docker run --rm --security-opt seccomp=unconfined  -v /home/data/vip01/work:/home/data/vip01/work",
+  "RnaSeq.threads": 8,
+  "RnaSeq.sjdb_overhang": 149,
+  "RnaSeq.min_count": 10,
+  "RnaSeq.padj_cutoff": 0.05,
+  "RnaSeq.log2fc_cutoff": 1.0
+}
