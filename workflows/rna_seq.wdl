@@ -12,8 +12,9 @@ struct RnaSeqSample {
 workflow RnaSeq {
   input {
     Array[RnaSeqSample] samples
-    String genome_fasta_path
-    String annotation_gtf_path
+    String genome_fasta_path = "/home/data/vip01/work/pipeline/database/mm39/Mus_musculus.GRCm39.dna.toplevel.fa"
+    String annotation_gtf_path = "/home/data/vip01/work/pipeline/database/mm39/Mus_musculus.GRCm39.115.gtf"
+    String star_index_path = ""
     String output_dir = "/home/data/vip01/work/rnaseq_results"
     String enrichment_annotation_path = ""
     Int threads = 8
@@ -31,16 +32,20 @@ workflow RnaSeq {
     String differential_analysis_image = "registry.cn-guangzhou.aliyuncs.com/origen/deseq2"
   }
 
-  call BuildStarIndex {
-    input:
-      genome_fasta_path = genome_fasta_path,
-      annotation_gtf_path = annotation_gtf_path,
-      output_dir = output_dir,
-      threads = threads,
-      sjdb_overhang = sjdb_overhang,
-      docker_run = docker_run,
-      image = star_image
+  if (star_index_path == "") {
+    call BuildStarIndex {
+      input:
+        genome_fasta_path = genome_fasta_path,
+        annotation_gtf_path = annotation_gtf_path,
+        output_dir = output_dir,
+        threads = threads,
+        sjdb_overhang = sjdb_overhang,
+        docker_run = docker_run,
+        image = star_image
+    }
   }
+
+  String resolved_star_index_path = if star_index_path != "" then star_index_path else select_first([BuildStarIndex.genome_dir])
 
   scatter (sample in samples) {
     String current_sample_id = sample.sample_id
@@ -84,7 +89,7 @@ workflow RnaSeq {
         sample_id = sample.sample_id,
         read1_path = TrimReads.trimmed_read1_path,
         read2_path = TrimReads.trimmed_read2_path,
-        genome_dir = BuildStarIndex.genome_dir,
+        genome_dir = resolved_star_index_path,
         output_dir = output_dir,
         threads = threads,
         docker_run = docker_run,
@@ -125,7 +130,7 @@ workflow RnaSeq {
   }
 
   output {
-    String star_index_dir = BuildStarIndex.genome_dir
+    String star_index_dir = resolved_star_index_path
     Array[String] raw_fastqc_dirs = RawFastQc.fastqc_dir_path
     Array[String] trimmed_fastqc_dirs = TrimmedFastQc.fastqc_dir_path
     Array[String] trimmed_read1 = TrimReads.trimmed_read1_path
